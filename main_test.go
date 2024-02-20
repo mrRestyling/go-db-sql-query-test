@@ -1,15 +1,33 @@
 package main
 
 import (
+	"database/sql"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	_ "modernc.org/sqlite"
 )
 
 func Test_SelectClient_WhenOk(t *testing.T) {
 	// настройте подключение к БД
+	db, err := sql.Open("sqlite", "demo.db")
+	if err != nil {
+		require.NoError(t, err)
+	}
+	defer db.Close()
 
 	clientID := 1
+	cl, err := selectClient(db, clientID)
+
+	require.NoError(t, err)
+
+	assert.Equal(t, clientID, cl.ID)
+	assert.NotEmpty(t, cl.FIO)
+	assert.NotEmpty(t, cl.Login)
+	assert.NotEmpty(t, cl.Birthday)
+	assert.NotEmpty(t, cl.Email)
 
 	// напиши тест здесь
 }
